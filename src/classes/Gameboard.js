@@ -39,6 +39,13 @@ export default class Gameboard {
     return true;
   }
 
+  getSize() {
+    const sizeY = this.#board.length;
+    const sizeX = this.#board[0].length;
+
+    return { sizeY, sizeX };
+  }
+
   placeShip(x, y, length, direction) {
     if (this.#isPlaceAvailable(x, y, length, direction)) {
       const ship = new Ship(length);

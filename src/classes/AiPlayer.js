@@ -5,14 +5,15 @@ export default class AiPlayer extends Player {
     super(isMyTurn);
   }
 
-  #isMyTurn;
-  #board;
-
   makeRandomMove(opponent) {
-    while (this.#isMyTurn) {
-      const y = Math.floor(Math.random() * this.#board.length);
-      const x = Math.floor(Math.random() * this.#board[y].length);
-      this.makeMove(opponent, x, y);
+    const { sizeX, sizeY } = this._myGameBoard.getSize();
+
+    let moveResult = 0;
+    while (this._isMyTurn) {
+      const y = Math.floor(Math.random() * sizeX);
+      const x = Math.floor(Math.random() * sizeY);
+      moveResult = this.makeMove(opponent, x, y);
     }
+    return moveResult;
   }
 }
