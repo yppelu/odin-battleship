@@ -20,11 +20,20 @@ export default class Gameboard {
   #ships = [];
 
   #isPlaceAvailable(x, y, length, direction) {
+    const isCellAvailable = (y, x) => {
+      for (let a = y - 1; a <= y + 1; a++) {
+        for (let b = x - 1; b <= x + 1; b++) {
+          if (this.#board[a] && this.#board[a][b]) return false;
+        }
+      }
+      return true;
+    };
+
     if (direction === 'vertical') {
       if (y + length >= this.#board.length) return false;
 
       for (let i = 0; i < length; i++) {
-        if (this.#board[y + i][x]) return false;
+        if (!isCellAvailable(y + i, x)) return false;
       }
     }
 
@@ -32,18 +41,11 @@ export default class Gameboard {
       if (x + length >= this.#board[y].length) return false;
 
       for (let i = 0; i < length; i++) {
-        if (this.#board[y][x + i]) return false;
+        if (!isCellAvailable(y, x + i)) return false;
       }
     }
 
     return true;
-  }
-
-  #getSize() {
-    const sizeY = this.#board.length;
-    const sizeX = this.#board[0].length;
-
-    return { sizeY, sizeX };
   }
 
   placeShip(x, y, length, direction) {
@@ -70,7 +72,10 @@ export default class Gameboard {
   }
 
   placeRandomShips() {
-    const { sizeX, sizeY } = this.#getSize();
+    this.clearBoard();
+
+    const sizeY = this.#board.length;
+    const sizeX = this.#board[0].length;
     const ships = [2, 3, 3, 4, 5];
     const directions = ['horizontal', 'vertical'];
 
