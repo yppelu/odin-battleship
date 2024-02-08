@@ -1,10 +1,16 @@
 import Ship from './Ship.js';
 
 export default class Gameboard {
+  static getBoardSize() {
+    return { sizeX: 10, sizeY: 10 };
+  }
+
   static getBoard() {
-    const board = new Array(10);
+    const { sizeX, sizeY } = Gameboard.getBoardSize();
+
+    const board = new Array(sizeY);
     for (let y = 0; y < board.length; y++) {
-      board[y] = new Array(10);
+      board[y] = new Array(sizeX);
       for (let x = 0; x < board[y].length; x++) {
         board[y][x] = 0;
       }
@@ -20,7 +26,7 @@ export default class Gameboard {
   #ships = [];
 
   #isPlaceAvailable(x, y, length, direction) {
-    const isCellAvailable = (y, x) => {
+    const isCellAvailable = (x, y) => {
       for (let a = y - 1; a <= y + 1; a++) {
         for (let b = x - 1; b <= x + 1; b++) {
           if (this.#board[a] && this.#board[a][b]) return false;
@@ -33,7 +39,7 @@ export default class Gameboard {
       if (y + length >= this.#board.length) return false;
 
       for (let i = 0; i < length; i++) {
-        if (!isCellAvailable(y + i, x)) return false;
+        if (!isCellAvailable(x, y + i)) return false;
       }
     }
 
@@ -41,7 +47,7 @@ export default class Gameboard {
       if (x + length >= this.#board[y].length) return false;
 
       for (let i = 0; i < length; i++) {
-        if (!isCellAvailable(y, x + i)) return false;
+        if (!isCellAvailable(x + i, y)) return false;
       }
     }
 

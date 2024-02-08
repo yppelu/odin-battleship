@@ -1,18 +1,15 @@
-import Player from './Player';
+import Gameboard from './Gameboard.js';
+import Player from './Player.js';
 
 export default class AiPlayer extends Player {
-  constructor(isMyTurn) {
-    super(isMyTurn);
-  }
-
-  makeRandomMove(opponent) {
-    const { sizeX, sizeY } = this._myGameBoard.getSize();
+  makeMove(opponent) {
+    const { sizeX, sizeY } = Gameboard.getBoardSize();
 
     let moveResult = 0;
-    while (this._isMyTurn) {
+    while (moveResult === 0) {
       const y = Math.floor(Math.random() * sizeX);
       const x = Math.floor(Math.random() * sizeY);
-      moveResult = this.makeMove(opponent, x, y);
+      moveResult = super.makeMove(opponent, x, y);
     }
     return moveResult;
   }
