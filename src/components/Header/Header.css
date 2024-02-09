@@ -17,3 +17,11 @@
 
   padding: 0.5rem 1rem;
 }
+
+.header__game-status-text--victory {
+  background-color: #80D282;
+}
+
+.header__game-status-text--defeat {
+  background-color: #FF8080;
+}

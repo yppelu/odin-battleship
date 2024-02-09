@@ -1,0 +1,35 @@
+.grid-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.grid-controls__grid-control-btn {
+  background-color: transparent;
+  color: #0034AB;
+  text-decoration: underline;
+  transition: color 0.15s ease-in-out;
+
+  border: none;
+}
+
+.grid-controls__start-game-btn {
+  background: linear-gradient(to bottom, #E1FAE1 0, #C3DEC5 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+  transition: transform 0.15s ease-in-out;
+
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+
+
+.grid-controls__start-game-btn:active {
+  transform: translateY(0.15em);
+}
+
+@media (hover: hover) {
+  .grid-controls__grid-control-btn:hover {
+    color: #00A405;
+  }
+}
