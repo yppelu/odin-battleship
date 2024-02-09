@@ -1,10 +1,6 @@
 import Ship from './Ship.js';
 
 export default class Gameboard {
-  static getBoardSize() {
-    return { sizeX: 10, sizeY: 10 };
-  }
-
   static getBoard() {
     const { sizeX, sizeY } = Gameboard.getBoardSize();
 
@@ -18,25 +14,36 @@ export default class Gameboard {
     return board;
   }
 
-  constructor() {
-    this.#board = Gameboard.getBoard();
+  static getBoardSize() {
+    return { sizeX: 10, sizeY: 10 };
   }
 
-  #board;
-  #ships = [];
+  static cloneBoard(board) {
+    const newBoard = new Gameboard();
+    newBoard._board = board._board;
+    newBoard._ships = board._ships;
+    return newBoard;
+  }
 
-  #isPlaceAvailable(x, y, length, direction) {
+  constructor() {
+    this._board = Gameboard.getBoard();
+  }
+
+  _board;
+  _ships = [];
+
+  _isPlaceAvailable(x, y, length, direction) {
     const isCellAvailable = (x, y) => {
       for (let a = y - 1; a <= y + 1; a++) {
         for (let b = x - 1; b <= x + 1; b++) {
-          if (this.#board[a] && this.#board[a][b]) return false;
+          if (this._board[a] && this._board[a][b]) return false;
         }
       }
       return true;
     };
 
     if (direction === 'vertical') {
-      if (y + length >= this.#board.length) return false;
+      if (y + length >= this._board.length) return false;
 
       for (let i = 0; i < length; i++) {
         if (!isCellAvailable(x, y + i)) return false;
@@ -44,7 +51,7 @@ export default class Gameboard {
     }
 
     if (direction === 'horizontal') {
-      if (x + length >= this.#board[y].length) return false;
+      if (x + length >= this._board[y].length) return false;
 
       for (let i = 0; i < length; i++) {
         if (!isCellAvailable(x + i, y)) return false;
@@ -55,22 +62,22 @@ export default class Gameboard {
   }
 
   placeShip(x, y, length, direction) {
-    if (this.#isPlaceAvailable(x, y, length, direction)) {
+    if (this._isPlaceAvailable(x, y, length, direction)) {
       const ship = new Ship(length);
 
       if (direction === 'vertical') {
         for (let i = 0; i < length; i++) {
-          this.#board[y + i][x] = ship;
+          this._board[y + i][x] = ship;
         }
       }
 
       if (direction === 'horizontal') {
         for (let i = 0; i < length; i++) {
-          this.#board[y][x + i] = ship;
+          this._board[y][x + i] = ship;
         }
       }
 
-      this.#ships.push(ship);
+      this._ships.push(ship);
       return true;
     }
 
@@ -80,8 +87,8 @@ export default class Gameboard {
   placeRandomShips() {
     this.clearBoard();
 
-    const sizeY = this.#board.length;
-    const sizeX = this.#board[0].length;
+    const sizeY = this._board.length;
+    const sizeX = this._board[0].length;
     const ships = [2, 3, 3, 4, 5];
     const directions = ['horizontal', 'vertical'];
 
@@ -96,31 +103,31 @@ export default class Gameboard {
   }
 
   clearBoard() {
-    this.#board = Gameboard.getBoard();
+    this._board = Gameboard.getBoard();
   }
 
   receiveAttack(x, y) {
-    if (this.#board[y][x] === 1 || this.#board[y][x] === 2) return 0;
+    if (this._board[y][x] === 1 || this._board[y][x] === 2) return 0;
 
-    if (this.#board[y][x] === 0) {
-      this.#board[y][x] = 1;
+    if (this._board[y][x] === 0) {
+      this._board[y][x] = 1;
       return 1;
     }
 
-    const ship = this.#board[y][x];
+    const ship = this._board[y][x];
 
     ship.hit();
-    this.#board[y][x] = 2;
+    this._board[y][x] = 2;
 
     if (ship.isSunk()) {
-      const shipIndex = this.#ships.indexOf(ship);
-      this.#ships.splice(shipIndex, 1);
+      const shipIndex = this._ships.indexOf(ship);
+      this._ships.splice(shipIndex, 1);
     }
 
-    return (this.#ships.length) ? 1 : 2;
+    return (this._ships.length) ? 1 : 2;
   }
 
   getBoard() {
-    return JSON.parse(JSON.stringify(this.#board));
+    return JSON.parse(JSON.stringify(this._board));
   }
 }

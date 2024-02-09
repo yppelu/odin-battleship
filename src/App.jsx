@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 import Gameboard from './classes/Gameboard.js';
 
-import Board from './components/Board/Board';
 import Header from './components/Header/Header.jsx';
 import Main from './components/Main/Main.jsx';
 
@@ -19,12 +18,23 @@ function App() {
 
   function handlePlayersMove(x, y) {
     if (isGameOn) {
-      const result = initialAiBoard.receiveAttack(x, y);
+      const newAiBoard = Gameboard.cloneBoard(aiBoard);
+      const result = newAiBoard.receiveAttack(x, y);
       if (result === 1 || result === 2) {
-        setAiBoard(initialAiBoard);
+        setAiBoard(newAiBoard);
         setIsPlayersTurn(false);
       }
     }
+  }
+
+  function setNewRandomShips() {
+    const newPlayersBoard = Gameboard.cloneBoard(playersBoard);
+    newPlayersBoard.placeRandomShips();
+    setPlayersBoard(newPlayersBoard);
+
+    const newAiBoard = Gameboard.cloneBoard(aiBoard);
+    newAiBoard.placeRandomShips();
+    setAiBoard(newAiBoard);
   }
 
   useEffect(() => {
@@ -34,20 +44,21 @@ function App() {
   useEffect(() => {
     if (!isPlayersTurn && isGameOn) {
       const { sizeX, sizeY } = Gameboard.getBoardSize();
+      const newPlayersBoard = Gameboard.cloneBoard(playersBoard);
 
       let moveResult = 0;
       while (moveResult === 0) {
         const y = Math.floor(Math.random() * sizeX);
         const x = Math.floor(Math.random() * sizeY);
-        moveResult = initialPlayersBoard.receiveAttack(x, y);
+        moveResult = newPlayersBoard.receiveAttack(x, y);
       }
       setTimeout(() => {
-        setPlayersBoard(initialPlayersBoard);
+        setPlayersBoard(newPlayersBoard);
         setIsPlayersTurn(true);
       }, 500);
 
     }
-  }, [isPlayersTurn, isGameOn]);
+  }, [isPlayersTurn, isGameOn, playersBoard]);
 
   return (
     <>
@@ -60,8 +71,9 @@ function App() {
       />
       <footer className='grid-controls'>
         <button
-          className='grid-controls__get-random-ships-btn'
+          className='grid-controls__grid-control-btn'
           type='button'
+          onClick={setNewRandomShips}
         >
           Randomize &#8635;
         </button>
