@@ -16,32 +16,32 @@ function App() {
   const [aiBoard, setAiBoard] = useState(initialAiBoard);
   const [isGameOn, setIsGameOn] = useState(false);
   const [isPlayersTurn, setIsPlayersTurn] = useState(true);
-  const [victory, setVictory] = useState({ isVictory: false, winner: '' });
+  const [winner, setWinner] = useState('');
 
   function handlePlayersMove(x, y) {
     if (isGameOn) {
       const newAiBoard = Gameboard.cloneBoard(aiBoard);
-      const result = newAiBoard.receiveAttack(x, y);
-      if (result === 1 || result === 2) {
+      const moveResult = newAiBoard.receiveAttack(x, y);
+      if (moveResult === 1) {
         setAiBoard(newAiBoard);
-        if (result === 2) {
-          setIsGameOn(false);
-          setVictory({ isVictory: true, winner: 'player' });
-        } else {
-          setIsPlayersTurn(false);
-        }
+        setIsPlayersTurn(false);
+      }
+      if (moveResult === 2) {
+        setAiBoard(newAiBoard);
+        setWinner('player');
+        setIsGameOn(false);
       }
     }
   }
 
   function setNewRandomShips() {
-    setVictory({ isVictory: false, winner: '' });
+    setWinner('');
 
-    const newPlayersBoard = Gameboard.cloneBoard(playersBoard);
+    const newPlayersBoard = new Gameboard();
     newPlayersBoard.placeRandomShips();
     setPlayersBoard(newPlayersBoard);
 
-    const newAiBoard = Gameboard.cloneBoard(aiBoard);
+    const newAiBoard = new Gameboard();
     newAiBoard.placeRandomShips();
     setAiBoard(newAiBoard);
   }
@@ -62,10 +62,10 @@ function App() {
   }
 
   function handleStartGame() {
-    setVictory({ isVictory: false, winner: '' });
     if (!areBoardsNew()) {
       setNewRandomShips();
     }
+    setWinner('');
     setIsPlayersTurn([true, false][Math.floor(Math.random() * 2)]);
     setIsGameOn(true);
   }
@@ -86,12 +86,14 @@ function App() {
         moveResult = newPlayersBoard.receiveAttack(x, y);
       }
       setTimeout(() => {
-        setPlayersBoard(newPlayersBoard);
-        if (moveResult === 2) {
-          setIsGameOn(false);
-          setVictory({ isVictory: true, winner: 'ai' });
-        } else {
+        if (moveResult === 1) {
+          setPlayersBoard(newPlayersBoard);
           setIsPlayersTurn(true);
+        }
+        if (moveResult === 2) {
+          setPlayersBoard(newPlayersBoard);
+          setWinner('ai');
+          setIsGameOn(false);
         }
       }, 500);
 
@@ -100,18 +102,18 @@ function App() {
 
   return (
     <>
-      <Header isGameOn={isGameOn} isPlayersTurn={isPlayersTurn} victory={victory} />
-      <Main
-        playersBoard={playersBoard}
-        aiBoard={aiBoard}
-        isPlayersTurn={isPlayersTurn}
-        makeMove={handlePlayersMove}
-      />
+      <Header isGameOn={isGameOn} isPlayersTurn={isPlayersTurn} winner={winner} />
       <GridControlsBlock
         isGameOn={isGameOn}
         setNewRandomShips={setNewRandomShips}
         startGame={handleStartGame}
         endGame={handleEndGame}
+      />
+      <Main
+        playersBoard={playersBoard}
+        aiBoard={aiBoard}
+        isPlayersTurn={isPlayersTurn}
+        makeMove={handlePlayersMove}
       />
     </>
   );

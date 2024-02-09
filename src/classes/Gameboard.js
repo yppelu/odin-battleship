@@ -20,8 +20,26 @@ export default class Gameboard {
 
   static cloneBoard(board) {
     const newBoard = new Gameboard();
-    newBoard._board = board._board;
-    newBoard._ships = board._ships;
+
+    for (const ship of board._ships) {
+      newBoard._ships.push(Ship.cloneShip(ship));
+    }
+
+    for (let y = 0; y < board._board.length; y++) {
+      for (let x = 0; x < board._board[y].length; x++) {
+        if (typeof board._board[y][x] === 'object') {
+          for (const ship of newBoard._ships) {
+            if (ship._length === board._board[y][x]._length) {
+              newBoard._board[y][x] = ship;
+              break;
+            }
+          }
+        } else {
+          newBoard._board[y][x] = board._board[y][x];
+        }
+      }
+    }
+
     return newBoard;
   }
 

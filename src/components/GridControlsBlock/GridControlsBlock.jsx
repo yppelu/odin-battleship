@@ -2,7 +2,7 @@ import './GridControlsBlock.css';
 
 export default function GridControlsBlock({ isGameOn, setNewRandomShips, startGame, endGame }) {
   return (
-    <footer className='grid-controls'>
+    <div className='grid-controls'>
       {
         isGameOn ? null :
           <button
@@ -24,6 +24,6 @@ export default function GridControlsBlock({ isGameOn, setNewRandomShips, startGa
           isGameOn ? 'End Game' : 'Start Game'
         }
       </button>
-    </footer>
+    </div>
   );
 }

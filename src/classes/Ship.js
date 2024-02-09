@@ -1,4 +1,10 @@
 export default class Ship {
+  static cloneShip(ship) {
+    const newShip = new Ship(ship._length);
+    newShip._hitTimes = ship._hitTimes;
+    return newShip;
+  }
+
   constructor(length) {
     this._length = length;
   }
