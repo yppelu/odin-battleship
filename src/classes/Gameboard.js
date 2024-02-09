@@ -119,4 +119,8 @@ export default class Gameboard {
 
     return (this.#ships.length) ? 1 : 2;
   }
+
+  getBoard() {
+    return JSON.parse(JSON.stringify(this.#board));
+  }
 }
