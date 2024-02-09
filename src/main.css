@@ -85,7 +85,29 @@ body {
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
   margin: 0 auto;
   max-width: 1200px;
-  width: 100%;
+  width: 95%;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board-description {
+  font-size: 0.9rem;
 }

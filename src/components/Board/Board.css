@@ -1,0 +1,38 @@
+.board {
+  background-color: #B4B4FF;
+
+  display: grid;
+  grid-template-columns: repeat(10, 30px);
+  grid-template-rows: repeat(10, 30px);
+  gap: 1px;
+
+  border: 1px solid #B4B4FF;
+}
+
+.board__cell {
+  background-color: #FFFFFF;
+}
+
+.board__cell--busy {
+  background-color: #B4B4FF;
+  border: 2px solid #0000FF;
+}
+
+.board__cell--miss {
+  position: relative;
+}
+
+.board__cell--miss::after {
+  content: "⦿";
+  color: #0000FF;
+
+  position: absolute;
+  top: 2px;
+  left: 7px;
+}
+
+.board__cell--hit {
+  background-color: #FFF2F2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF0000'%3E%3Cpath d='M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z' /%3E%3C/svg%3E");
+  border: #FF0000 solid 2px;
+}
