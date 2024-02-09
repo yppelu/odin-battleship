@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import Gameboard from './classes/Gameboard.js';
+import Ai from './classes/Ai.js';
 
 import Header from './components/Header/Header.jsx';
 import Main from './components/Main/Main.jsx';
 import GridControlsBlock from './components/GridControlsBlock/GridControlsBlock.jsx';
 
-const initialPlayersBoard = new Gameboard();
-initialPlayersBoard.placeRandomShips();
-const initialAiBoard = new Gameboard();
-initialAiBoard.placeRandomShips();
-
 function App() {
-  const [playersBoard, setPlayersBoard] = useState(initialPlayersBoard);
-  const [aiBoard, setAiBoard] = useState(initialAiBoard);
+  const [playersBoard, setPlayersBoard] = useState(new Gameboard());
+  const [aiBoard, setAiBoard] = useState(new Gameboard());
+  const [aiPlayer, setAiPlayer] = useState(new Ai());
   const [isGameOn, setIsGameOn] = useState(false);
   const [isPlayersTurn, setIsPlayersTurn] = useState(true);
   const [winner, setWinner] = useState('');
@@ -28,8 +25,7 @@ function App() {
       }
       if (moveResult === 2) {
         setAiBoard(newAiBoard);
-        setWinner('player');
-        setIsGameOn(false);
+        handleEndGame('player');
       }
     }
   }
@@ -46,59 +42,58 @@ function App() {
     setAiBoard(newAiBoard);
   }
 
-  function areBoardsNew() {
+  function areBoardsFresh() {
     const ai = aiBoard.getBoard();
     const player = playersBoard.getBoard();
+    let areShipsThere = false;
 
     for (let i = 0; i < ai.length; i++) {
       for (let j = 0; j < ai[i].length; j++) {
         if (ai[i][j] === 1 || ai[i][j] === 2 || player[i][j] === 1 || player[i][j] === 2) {
           return false;
         }
+        if (typeof ai[i][j] === 'object' && typeof player[i][j] === 'object') {
+          areShipsThere = true;
+        }
       }
     }
 
-    return true;
+    return (areShipsThere) ? true : false;
   }
 
   function handleStartGame() {
-    if (!areBoardsNew()) {
+    if (!areBoardsFresh()) {
       setNewRandomShips();
+    } else {
+      setWinner('');
     }
-    setWinner('');
+
+    setAiPlayer(new Ai());
     setIsPlayersTurn([true, false][Math.floor(Math.random() * 2)]);
     setIsGameOn(true);
   }
 
-  function handleEndGame() {
+  function handleEndGame(winner) {
+    if (winner) setWinner(winner);
     setIsGameOn(false);
   }
 
   useEffect(() => {
     if (!isPlayersTurn && isGameOn) {
-      const { sizeX, sizeY } = Gameboard.getBoardSize();
       const newPlayersBoard = Gameboard.cloneBoard(playersBoard);
+      const newAiPlayer = Ai.clone(aiPlayer);
 
-      let moveResult = 0;
-      while (moveResult === 0) {
-        const y = Math.floor(Math.random() * sizeX);
-        const x = Math.floor(Math.random() * sizeY);
-        moveResult = newPlayersBoard.receiveAttack(x, y);
-      }
+      const moveResult = newAiPlayer.makeMove(newPlayersBoard);
+
       setTimeout(() => {
-        if (moveResult === 1) {
-          setPlayersBoard(newPlayersBoard);
-          setIsPlayersTurn(true);
-        }
-        if (moveResult === 2) {
-          setPlayersBoard(newPlayersBoard);
-          setWinner('ai');
-          setIsGameOn(false);
-        }
+        setAiPlayer(newAiPlayer);
+        setPlayersBoard(newPlayersBoard);
+        if (moveResult === 1) setIsPlayersTurn(true);
+        if (moveResult === 2) handleEndGame('ai');
       }, 500);
 
     }
-  }, [isPlayersTurn, isGameOn, playersBoard]);
+  }, [isPlayersTurn, isGameOn, aiPlayer, playersBoard]);
 
   return (
     <>
