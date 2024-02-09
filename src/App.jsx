@@ -4,6 +4,7 @@ import Gameboard from './classes/Gameboard.js';
 
 import Board from './components/Board/Board';
 import Header from './components/Header/Header.jsx';
+import Main from './components/Main/Main.jsx';
 
 const initialPlayersBoard = new Gameboard();
 initialPlayersBoard.placeRandomShips();
@@ -46,23 +47,24 @@ function App() {
       }, 500);
 
     }
-  }, [isPlayersTurn]);
+  }, [isPlayersTurn, isGameOn]);
 
   return (
     <>
       <Header isGameOn={isGameOn} isPlayersTurn={isPlayersTurn} />
-      <main className='main'>
-        <div className='board-wrapper'>
-          <p className='board-description'>Your grid</p>
-          <Board host='player' gameBoard={playersBoard} isTurnAvailable={!isPlayersTurn} />
-        </div>
-        <div className='board-wrapper'>
-          <p className='board-description'>AI&apos;s grid</p>
-          <Board host='ai' gameBoard={aiBoard} isTurnAvailable={isPlayersTurn} makeMove={handlePlayersMove} />
-        </div>
-      </main>
+      <Main
+        playersBoard={playersBoard}
+        aiBoard={aiBoard}
+        isPlayersTurn={isPlayersTurn}
+        makeMove={handlePlayersMove}
+      />
       <footer className='grid-controls'>
-        <button className="grid-controls__get-random-ships-brn" type='button'>Randomise</button>
+        <button
+          className='grid-controls__get-random-ships-btn'
+          type='button'
+        >
+          Randomize &#8635;
+        </button>
       </footer>
     </>
   );
