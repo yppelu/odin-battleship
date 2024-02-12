@@ -107,7 +107,7 @@ export default class Gameboard {
 
     const sizeY = this._board.length;
     const sizeX = this._board[0].length;
-    const ships = [2, 3, 3, 4, 5];
+    const ships = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4];
     const directions = ['horizontal', 'vertical'];
 
     for (let i = ships.length - 1; i >= 0; i--) {
@@ -140,9 +140,36 @@ export default class Gameboard {
     if (ship.isSunk()) {
       const shipIndex = this._ships.indexOf(ship);
       this._ships.splice(shipIndex, 1);
+      this._fillCellsAroundSunkShip(x, y);
     }
 
     return (this._ships.length) ? 2 : 3;
+  }
+
+  _fillCellsAroundSunkShip(x, y, visited = new Set()) {
+    if (visited.has(`${x},${y}`)) return;
+    visited.add(`${x},${y}`);
+
+    for (let i = y - 1; i <= y + 1; i++) {
+      for (let j = x - 1; j <= x + 1; j++) {
+        if (this._board[i] && this._board[i][j] === 0) this._board[i][j] = 1;
+      }
+    }
+
+    if (this._board[y - 1] && this._board[y - 1][x] === 2) {
+      this._fillCellsAroundSunkShip(x, y - 1, visited);
+    }
+    if (this._board[y][x + 1] === 2) {
+      this._fillCellsAroundSunkShip(x + 1, y, visited);
+    }
+    if (this._board[y + 1] && this._board[y + 1][x] === 2) {
+      this._fillCellsAroundSunkShip(x, y + 1, visited);
+    }
+    if (this._board[y][x - 1] === 2) {
+      this._fillCellsAroundSunkShip(x - 1, y, visited);
+    }
+
+    return;
   }
 
   getBoard() {

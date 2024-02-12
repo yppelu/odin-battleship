@@ -19,9 +19,12 @@ function App() {
     if (isGameOn) {
       const newAiBoard = Gameboard.cloneBoard(aiBoard);
       const moveResult = newAiBoard.receiveAttack(x, y);
-      if (moveResult === 1 || moveResult === 2) {
+      if (moveResult === 1) {
         setAiBoard(newAiBoard);
         setIsPlayersTurn(false);
+      }
+      if (moveResult === 2) {
+        setAiBoard(newAiBoard);
       }
       if (moveResult === 3) {
         setAiBoard(newAiBoard);
@@ -88,7 +91,11 @@ function App() {
       setTimeout(() => {
         setAiPlayer(newAiPlayer);
         setPlayersBoard(newPlayersBoard);
-        if (moveResult === 1 || moveResult === 2) setIsPlayersTurn(true);
+        if (moveResult === 1) setIsPlayersTurn(true);
+        if (moveResult === 2) {
+          setIsPlayersTurn(true);
+          setIsPlayersTurn(false);
+        }
         if (moveResult === 3) handleEndGame('ai');
       }, 500);
 

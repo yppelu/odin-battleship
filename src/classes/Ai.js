@@ -15,15 +15,6 @@ export default class Ai {
     this._board = Gameboard.getBoard();
   }
 
-  _isThisCellSurrounded(x, y) {
-    return (
-      (this._board[y - 1] && this._board[y - 1][x] && !this._isThereEngagedCellsInDiagonal(x, y - 1) || !this._board[y - 1]) &&
-      (this._board[y + 1] && this._board[y + 1][x] && !this._isThereEngagedCellsInDiagonal(x, y + 1) || !this._board[y + 1]) &&
-      this._board[y][x - 1] && !this._isThereEngagedCellsInDiagonal(x - 1, y) &&
-      this._board[y][x + 1] && !this._isThereEngagedCellsInDiagonal(x + 1, y)
-    );
-  }
-
   _isThereEngagedCellsInDiagonal(x, y) {
     return (
       this._board[y - 1] && this._board[y - 1][x - 1] === 2 ||
@@ -73,7 +64,7 @@ export default class Ai {
       while (!moveResult) {
         y = Math.floor(Math.random() * sizeX);
         x = Math.floor(Math.random() * sizeY);
-        if (!this._isThereEngagedCellsInDiagonal(x, y) && !this._isThisCellSurrounded(x, y)) {
+        if (!this._isThereEngagedCellsInDiagonal(x, y)) {
           moveResult = opponentsBoard.receiveAttack(x, y);
         }
       }
@@ -82,6 +73,7 @@ export default class Ai {
     }
 
     this._board[y][x] = opponentsBoard.getBoard()[y][x];
+
     return moveResult;
   }
 }
