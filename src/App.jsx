@@ -97,7 +97,7 @@ function App() {
           setIsPlayersTurn(false);
         }
         if (moveResult === 3) handleEndGame('ai');
-      }, 500);
+      }, 750);
 
     }
   }, [isPlayersTurn, isGameOn, aiPlayer, playersBoard]);
