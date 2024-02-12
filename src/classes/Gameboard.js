@@ -142,7 +142,7 @@ export default class Gameboard {
       this._ships.splice(shipIndex, 1);
     }
 
-    return (this._ships.length) ? 1 : 2;
+    return (this._ships.length) ? 2 : 3;
   }
 
   getBoard() {
